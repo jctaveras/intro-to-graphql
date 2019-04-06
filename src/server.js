@@ -6,6 +6,7 @@ import { connect } from './db'
 import product from './types/product/product.resolvers'
 import coupon from './types/coupon/coupon.resolvers'
 import user from './types/user/user.resolvers'
+import { authenticate } from './utils/auth';
 
 const types = ['product', 'coupon', 'user']
 
@@ -23,7 +24,7 @@ export const start = async () => {
     resolvers: merge({}, product, coupon, user),
     context({ req }) {
       // use the authenticate function from utils to auth req, its Async!
-      return { user: null }
+      return { user: authenticate(req) };
     }
   })
 
