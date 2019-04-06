@@ -10,9 +10,29 @@ const productsTypeMatcher = {
 }
 
 export default {
-  Query: {},
-  Mutation: {},
+  Query: {
+    product (_, args, ctx) {
+      return Product.findById(args.id).exec();
+    },
+    products (_, args, ctx) {
+      return Product.find().exec();
+    }
+  },
+  Mutation: {
+    newProduct (_, args, ctx) {
+      return Product.create({ ...args.input, createdBy: ctx.user._id });
+    },
+    removeProduct (_, args, ctx) {
+      return Product.findOneAndRemove(args.id).exec();
+    },
+    updateProduct (_, args, ctx) {
+      return Product.findByIdAndUpdate(args.id, args.input, { new: true }).exec();
+    }
+  },
   Product: {
-    __resolveType(product) {}
+    __resolveType(product) {},
+    createdBy (product) {
+      return User.findById(product.createdBy._id);
+    }
   }
 }
